@@ -58,3 +58,22 @@ class Train(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class Journey(models.Model):
+    route = models.ForeignKey(
+        to=Route,
+        on_delete=models.CASCADE,
+        related_name="journeys"
+    )
+    train = models.ForeignKey(
+        to=Train,
+        on_delete=models.CASCADE,
+        related_name="journeys"
+    )
+    departure_time = models.DateTimeField()
+    arrival_time = models.DateTimeField()
+    crew = models.ManyToManyField(to=Crew)
+
+    def __str__(self) -> Route:
+        return self.route
