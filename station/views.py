@@ -1,10 +1,10 @@
 from rest_framework import mixins, viewsets
 
-from train_station.models import (
+from station.models import (
     TrainType,
     Train,
 )
-from train_station.serializers import (
+from station.serializers import (
     TrainTypeSerializer,
     TrainSerializer,
 )
