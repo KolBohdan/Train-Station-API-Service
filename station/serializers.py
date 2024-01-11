@@ -5,6 +5,7 @@ from station.models import (
     Crew,
     Station,
     Route,
+    Journey,
 )
 
 
@@ -42,4 +43,10 @@ class StationSerializer(serializers.ModelSerializer):
 class RouteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
+        fields = "__all__"
+
+
+class JourneySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Journey
         fields = "__all__"
