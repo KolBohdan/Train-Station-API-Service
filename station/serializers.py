@@ -76,3 +76,20 @@ class JourneySerializer(serializers.ModelSerializer):
     class Meta:
         model = Journey
         fields = "__all__"
+
+
+class JourneyListSerializer(JourneySerializer):
+    route = serializers.StringRelatedField(many=False)
+    train_name = serializers.CharField(source="train.name", read_only=True)
+    crew = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Journey
+        fields = (
+            "id",
+            "route",
+            "train_name",
+            "departure_time",
+            "arrival_time",
+            "crew"
+        )
