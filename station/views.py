@@ -73,7 +73,7 @@ class RouteViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Route.objects.all()
+    queryset = Route.objects.select_related("source", "destination")
     serializer_class = RouteSerializer
 
     def get_serializer_class(self):
@@ -90,6 +90,7 @@ class JourneyViewSet(
 ):
     queryset = (
         Journey.objects.all()
+        .select_related("route__source", "route__destination")
         .annotate(
             tickets_available=(
                 F("train__cargo_num") * F("train__places_in_cargo")
@@ -117,7 +118,11 @@ class OrderViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Order.objects.all()
+    queryset = Order.objects.prefetch_related(
+            "tickets__journey__crew",
+            "tickets__journey__route",
+            "tickets__journey__train"
+        )
     pagination_class = OrderPagination
     serializer_class = OrderSerializer
 
