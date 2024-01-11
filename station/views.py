@@ -6,6 +6,7 @@ from station.models import (
     Crew,
     Station,
     Route,
+    Journey,
 )
 from station.serializers import (
     TrainTypeSerializer,
@@ -13,6 +14,7 @@ from station.serializers import (
     CrewSerializer,
     StationSerializer,
     RouteSerializer,
+    JourneySerializer,
 )
 
 
@@ -59,3 +61,12 @@ class RouteViewSet(
 ):
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
+
+
+class JourneyViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Journey.objects.all()
+    serializer_class = JourneySerializer
