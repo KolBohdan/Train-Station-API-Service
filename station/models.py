@@ -77,8 +77,8 @@ class Journey(models.Model):
     arrival_time = models.DateTimeField()
     crew = models.ManyToManyField(to=Crew)
 
-    def __str__(self) -> Route:
-        return self.route
+    def __str__(self):
+        return str(self.route)
 
 
 class Order(models.Model):
