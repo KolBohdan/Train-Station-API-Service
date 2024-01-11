@@ -1,5 +1,7 @@
 from rest_framework import mixins, viewsets
 
+from django.db.models import F, Count
+
 from station.models import (
     TrainType,
     Train,
@@ -83,7 +85,15 @@ class JourneyViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Journey.objects.all()
+    queryset = (
+        Journey.objects.all()
+        .annotate(
+            tickets_available=(
+                F("train__cargo_num") * F("train__places_in_cargo")
+                - Count("tickets")
+            )
+        )
+    )
     serializer_class = JourneySerializer
 
     def get_serializer_class(self):
