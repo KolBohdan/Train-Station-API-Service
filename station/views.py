@@ -15,6 +15,7 @@ from station.serializers import (
     StationSerializer,
     RouteSerializer,
     JourneySerializer,
+    TrainListSerializer,
 )
 
 
@@ -34,6 +35,11 @@ class TrainViewSet(
 ):
     queryset = Train.objects.all()
     serializer_class = TrainSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return TrainListSerializer
+        return TrainSerializer
 
 
 class CrewViewSet(
