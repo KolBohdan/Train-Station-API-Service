@@ -49,6 +49,10 @@ class TrainListSerializer(TrainSerializer):
         )
 
 
+class TrainDetailSerializer(TrainSerializer):
+    train_type = TrainTypeSerializer(many=False, read_only=True)
+
+
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
