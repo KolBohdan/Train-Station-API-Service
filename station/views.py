@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import mixins, viewsets
 
 from django.db.models import F, Count
@@ -126,6 +128,21 @@ class JourneyViewSet(
         )
     )
     serializer_class = JourneySerializer
+
+    def get_queryset(self):
+        departure_time = self.request.query_params.get("departure_time")
+        train_id_str = self.request.query_params.get("train")
+
+        queryset = self.queryset
+
+        if departure_time:
+            departure_time = datetime.strptime(departure_time, "%Y-%m-%d").date()
+            queryset = queryset.filter(departure_time__date=departure_time)
+
+        if train_id_str:
+            queryset = queryset.filter(train_id=int(train_id_str))
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
