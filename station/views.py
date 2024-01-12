@@ -43,8 +43,29 @@ class TrainViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Train.objects.all()
+    queryset = Train.objects.select_related("train_type")
     serializer_class = TrainSerializer
+
+    @staticmethod
+    def _params_to_ints(qs):
+        """Converts a list of string IDs to a list of integers"""
+        return [int(str_id) for str_id in qs.split(",")]
+
+    def get_queryset(self):
+        """Retrieve the trains with filters"""
+        name = self.request.query_params.get("name")
+        train_type = self.request.query_params.get("train_type")
+
+        queryset = self.queryset
+
+        if name:
+            queryset = queryset.filter(name__icontains=name)
+
+        if train_type:
+            train_type_ids = self._params_to_ints(train_type)
+            queryset = queryset.filter(train_type__id__in=train_type_ids)
+
+        return queryset.distinct()
 
     def get_serializer_class(self):
         if self.action == "list":
