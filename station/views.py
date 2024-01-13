@@ -4,6 +4,7 @@ from rest_framework import mixins, viewsets
 
 from django.db.models import F, Count
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 
 from station.models import (
     TrainType,
@@ -169,6 +170,7 @@ class OrderViewSet(
         )
     pagination_class = OrderPagination
     serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
