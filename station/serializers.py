@@ -53,6 +53,12 @@ class TrainDetailSerializer(TrainSerializer):
     train_type = TrainTypeSerializer(many=False, read_only=True)
 
 
+class TrainImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Train
+        fields = ("id", "image")
+
+
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
