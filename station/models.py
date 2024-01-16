@@ -60,6 +60,9 @@ class Train(models.Model):
     )
     image = models.ImageField(null=True, upload_to=train_image_file_path)
 
+    class Meta:
+        ordering = ["name"]
+
     @property
     def capacity(self) -> int:
         return self.cargo_num * self.places_in_cargo
