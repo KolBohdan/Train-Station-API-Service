@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins, viewsets, status
 
 from django.db.models import F, Count
@@ -102,6 +104,23 @@ class TrainViewSet(
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "train_type",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by train_type id (ex. ?train_type=1,2)",
+            ),
+            OpenApiParameter(
+                "name",
+                type=OpenApiTypes.STR,
+                description="Filter by train name (ex. ?name=Express)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class CrewViewSet(
     mixins.CreateModelMixin,
@@ -174,6 +193,23 @@ class JourneyViewSet(
         if self.action == "retrieve":
             return JourneyDetailSerializer
         return JourneySerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "train",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by train id (ex. ?train=2,4)",
+            ),
+            OpenApiParameter(
+                "departure_time",
+                type=OpenApiTypes.STR,
+                description="Filter by departure time in format Y-m-d (ex. ?departure_time=2024-02-20)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class OrderPagination(PageNumberPagination):
