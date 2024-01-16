@@ -87,3 +87,12 @@ class UnauthenticatedTrainApiTests(TestCase):
     def test_auth_required(self):
         res = self.client.get(TRAIN_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class UnauthenticatedJourneyApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_auth_required(self):
+        res = self.client.get(JOURNEY_URL)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
