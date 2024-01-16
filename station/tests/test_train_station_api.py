@@ -13,7 +13,10 @@ from station.models import (
     Crew,
     Journey,
 )
-from station.serializers import TrainListSerializer
+from station.serializers import (
+    TrainListSerializer,
+    TrainDetailSerializer,
+)
 
 TRAIN_URL = reverse("station:train-list")
 JOURNEY_URL = reverse("station:journey-list")
@@ -151,6 +154,16 @@ class AuthenticatedTrainApiTests(TestCase):
         self.assertIn(serializer1.data, res.data)
         self.assertIn(serializer2.data, res.data)
         self.assertNotIn(serializer3.data, res.data)
+
+    def test_retrieve_train_detail(self):
+        train = sample_train()
+
+        url = detail_url(train.id)
+        res = self.client.get(url)
+
+        serializer = TrainDetailSerializer(train)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
 
 
 class UnauthenticatedJourneyApiTests(TestCase):
