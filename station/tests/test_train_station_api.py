@@ -129,7 +129,7 @@ class AuthenticatedTrainApiTests(TestCase):
         train3 = sample_train(name="Train with base type")
 
         res = self.client.get(
-            TRAIN_URL, {"train_type": f"{train1.id},{train2.id}"}
+            TRAIN_URL, {"train_type": f"{train_type1.id},{train_type2.id}"}
         )
 
         serializer1 = TrainListSerializer(train1)
