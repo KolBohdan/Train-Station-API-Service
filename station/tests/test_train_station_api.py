@@ -82,6 +82,10 @@ def sample_journey(**params):
     return Journey.objects.create(**defaults)
 
 
+def detail_url(train_id):
+    return reverse("station:train-detail", args=[train_id])
+
+
 class UnauthenticatedTrainApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
