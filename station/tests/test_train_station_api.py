@@ -133,6 +133,21 @@ class AuthenticatedTrainApiTests(TestCase):
         self.assertIn(serializer2.data, res.data)
         self.assertNotIn(serializer3.data, res.data)
 
+    def test_filter_trains_by_name(self):
+        train1 = sample_train(name="Train")
+        train2 = sample_train(name="Another Train")
+        train3 = sample_train(name="No match")
+
+        res = self.client.get(TRAIN_URL, {"name": "train"})
+
+        serializer1 = TrainListSerializer(train1)
+        serializer2 = TrainListSerializer(train2)
+        serializer3 = TrainListSerializer(train3)
+
+        self.assertIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data)
+        self.assertNotIn(serializer3.data, res.data)
+
 
 class UnauthenticatedJourneyApiTests(TestCase):
     def setUp(self):
