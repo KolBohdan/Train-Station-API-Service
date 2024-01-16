@@ -80,7 +80,7 @@ def sample_journey(**params):
     return Journey.objects.create(**defaults)
 
 
-class UnauthenticatedTrainStationApiTests(TestCase):
+class UnauthenticatedTrainApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
