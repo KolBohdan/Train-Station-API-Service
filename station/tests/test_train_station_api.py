@@ -48,7 +48,7 @@ def sample_route(**params):
 
 def sample_train(**params):
     train_type = TrainType.objects.create(
-        name="Test type"
+        name="Base"
     )
 
     defaults = {
@@ -111,6 +111,27 @@ class AuthenticatedTrainApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_filter_trains_by_train_types(self):
+        train_type1 = TrainType.objects.create(name="TrainType 1")
+        train_type2 = TrainType.objects.create(name="TrainType 2")
+
+        train1 = sample_train(name="Train 1", train_type=train_type1)
+        train2 = sample_train(name="Train 2", train_type=train_type2)
+
+        train3 = sample_train(name="Train with base type")
+
+        res = self.client.get(
+            TRAIN_URL, {"train_type": f"{train1.id},{train2.id}"}
+        )
+
+        serializer1 = TrainListSerializer(train1)
+        serializer2 = TrainListSerializer(train2)
+        serializer3 = TrainListSerializer(train3)
+
+        self.assertIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data)
+        self.assertNotIn(serializer3.data, res.data)
 
 
 class UnauthenticatedJourneyApiTests(TestCase):
