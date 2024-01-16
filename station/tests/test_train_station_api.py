@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
@@ -12,6 +13,7 @@ from station.models import (
     Crew,
     Journey,
 )
+from station.serializers import TrainListSerializer
 
 TRAIN_URL = reverse("station:train-list")
 JOURNEY_URL = reverse("station:journey-list")
@@ -87,6 +89,28 @@ class UnauthenticatedTrainApiTests(TestCase):
     def test_auth_required(self):
         res = self.client.get(TRAIN_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class AuthenticatedTrainApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "test@test.com",
+            "testpass",
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_list_trains(self):
+        sample_train()
+        sample_train()
+
+        res = self.client.get(TRAIN_URL)
+
+        trains = Train.objects.order_by("id")
+        serializer = TrainListSerializer(trains, many=True)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
 
 
 class UnauthenticatedJourneyApiTests(TestCase):
