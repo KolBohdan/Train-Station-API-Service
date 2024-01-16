@@ -165,6 +165,21 @@ class AuthenticatedTrainApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
+    def test_create_train_forbidden(self):
+        train_type = TrainType.objects.create(
+            name="Test"
+        )
+
+        payload = {
+            "name": "Train",
+            "cargo_num": 10,
+            "places_in_cargo": 15,
+            "train_type": train_type,
+        }
+        res = self.client.post(TRAIN_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class UnauthenticatedJourneyApiTests(TestCase):
     def setUp(self):
