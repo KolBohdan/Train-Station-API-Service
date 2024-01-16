@@ -16,7 +16,8 @@ from station.models import (
     Crew,
     Station,
     Route,
-    Journey, Order,
+    Journey,
+    Order,
 )
 from station.serializers import (
     TrainTypeSerializer,
@@ -165,8 +166,7 @@ class JourneyViewSet(
         .select_related("route__source", "route__destination")
         .annotate(
             tickets_available=(
-                F("train__cargo_num") * F("train__places_in_cargo")
-                - Count("tickets")
+                F("train__cargo_num") * F("train__places_in_cargo") - Count("tickets")
             )
         )
     )
@@ -223,10 +223,8 @@ class OrderViewSet(
     viewsets.GenericViewSet,
 ):
     queryset = Order.objects.prefetch_related(
-            "tickets__journey__crew",
-            "tickets__journey__route",
-            "tickets__journey__train"
-        )
+        "tickets__journey__crew", "tickets__journey__route", "tickets__journey__train"
+    )
     pagination_class = OrderPagination
     serializer_class = OrderSerializer
     permission_classes = (IsAuthenticated,)

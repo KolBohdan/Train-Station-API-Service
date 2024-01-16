@@ -18,14 +18,10 @@ class Station(models.Model):
 
 class Route(models.Model):
     source = models.ForeignKey(
-        to=Station,
-        on_delete=models.CASCADE,
-        related_name="route_sources"
+        to=Station, on_delete=models.CASCADE, related_name="route_sources"
     )
     destination = models.ForeignKey(
-        to=Station,
-        on_delete=models.CASCADE,
-        related_name="route_destinations"
+        to=Station, on_delete=models.CASCADE, related_name="route_destinations"
     )
     distance = models.IntegerField()
 
@@ -60,9 +56,7 @@ class Train(models.Model):
     cargo_num = models.IntegerField()
     places_in_cargo = models.IntegerField()
     train_type = models.ForeignKey(
-        to=TrainType,
-        on_delete=models.CASCADE,
-        related_name="trains"
+        to=TrainType, on_delete=models.CASCADE, related_name="trains"
     )
     image = models.ImageField(null=True, upload_to=train_image_file_path)
 
@@ -76,14 +70,10 @@ class Train(models.Model):
 
 class Journey(models.Model):
     route = models.ForeignKey(
-        to=Route,
-        on_delete=models.CASCADE,
-        related_name="journeys"
+        to=Route, on_delete=models.CASCADE, related_name="journeys"
     )
     train = models.ForeignKey(
-        to=Train,
-        on_delete=models.CASCADE,
-        related_name="journeys"
+        to=Train, on_delete=models.CASCADE, related_name="journeys"
     )
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
@@ -96,9 +86,7 @@ class Journey(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="orders"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders"
     )
 
     def __str__(self):
@@ -129,9 +117,9 @@ class Ticket(models.Model):
                 raise error_to_raise(
                     {
                         ticket_attr_name: f"{ticket_attr_name} "
-                                          f"number must be in available range: "
-                                          f"(1, {train_attr_name}): "
-                                          f"(1, {count_attrs})"
+                        f"number must be in available range: "
+                        f"(1, {train_attr_name}): "
+                        f"(1, {count_attrs})"
                     }
                 )
 
@@ -144,11 +132,11 @@ class Ticket(models.Model):
         )
 
     def save(
-            self,
-            force_insert=False,
-            force_update=False,
-            using=None,
-            update_fields=None,
+        self,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
     ):
         self.full_clean()
         return super(Ticket, self).save(
@@ -156,9 +144,7 @@ class Ticket(models.Model):
         )
 
     def __str__(self):
-        return (
-            f"{str(self.journey)} (cargo: {self.cargo}, seat: {self.seat})"
-        )
+        return f"{str(self.journey)} (cargo: {self.cargo}, seat: {self.seat})"
 
     class Meta:
         unique_together = ("journey", "cargo", "seat")

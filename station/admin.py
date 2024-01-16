@@ -8,7 +8,7 @@ from station.models import (
     Train,
     Journey,
     Order,
-    Ticket
+    Ticket,
 )
 
 admin.site.register(Station)
