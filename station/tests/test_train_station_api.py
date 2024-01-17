@@ -25,11 +25,7 @@ JOURNEY_URL = reverse("station:journey-list")
 
 
 def sample_station(**params):
-    defaults = {
-        "name": "Sample station",
-        "latitude": 10.2,
-        "longitude": 15.1
-    }
+    defaults = {"name": "Sample station", "latitude": 10.2, "longitude": 15.1}
 
     defaults.update(params)
 
@@ -40,11 +36,7 @@ def sample_route(**params):
     source = sample_station(name="First station")
     destination = sample_station(name="Second station")
 
-    defaults = {
-        "source": source,
-        "destination": destination,
-        "distance": 500
-    }
+    defaults = {"source": source, "destination": destination, "distance": 500}
 
     defaults.update(params)
 
@@ -52,15 +44,13 @@ def sample_route(**params):
 
 
 def sample_train(**params):
-    train_type = TrainType.objects.create(
-        name="Base"
-    )
+    train_type = TrainType.objects.create(name="Base")
 
     defaults = {
         "name": "Sample train",
         "cargo_num": 4,
         "places_in_cargo": 20,
-        "train_type": train_type
+        "train_type": train_type,
     }
     defaults.update(params)
 
@@ -75,7 +65,7 @@ def sample_journey(**params):
         "route": route,
         "train": train,
         "departure_time": "2024-01-18T15:00:00+02:00",
-        "arrival_time": "2024-01-19T10:00:00+02:00"
+        "arrival_time": "2024-01-19T10:00:00+02:00",
     }
     defaults.update(params)
 
@@ -171,9 +161,7 @@ class AuthenticatedTrainApiTests(TestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_create_train_forbidden(self):
-        train_type = TrainType.objects.create(
-            name="Test"
-        )
+        train_type = TrainType.objects.create(name="Test")
 
         payload = {
             "name": "Train",
@@ -222,9 +210,7 @@ class AuthenticatedJourneyApiTests(TestCase):
         journey2 = sample_journey(route=route2)
         journey3 = sample_journey(route=route3)
 
-        res = self.client.get(
-            JOURNEY_URL, {"route": f"{route1.id}, {route2.id}"}
-        )
+        res = self.client.get(JOURNEY_URL, {"route": f"{route1.id}, {route2.id}"})
 
         serializer1 = JourneyListSerializer(journey1)
         serializer2 = JourneyListSerializer(journey2)
@@ -243,9 +229,7 @@ class AuthenticatedJourneyApiTests(TestCase):
         journey2 = sample_journey(train=train2)
         journey3 = sample_journey(train=train3)
 
-        res = self.client.get(
-            JOURNEY_URL, {"train": f"{train1.id}, {train2.id}"}
-        )
+        res = self.client.get(JOURNEY_URL, {"train": f"{train1.id}, {train2.id}"})
 
         serializer1 = JourneyListSerializer(journey1)
         serializer2 = JourneyListSerializer(journey2)
@@ -261,9 +245,7 @@ class AuthenticatedJourneyApiTests(TestCase):
         journey1 = sample_journey()
         journey2 = sample_journey(departure_time="2000-01-18T15:00:00+02:00")
 
-        res = self.client.get(
-            JOURNEY_URL, {"departure_time": departure_time}
-        )
+        res = self.client.get(JOURNEY_URL, {"departure_time": departure_time})
 
         serializer1 = JourneyListSerializer(journey1)
         serializer2 = JourneyListSerializer(journey2)
@@ -286,17 +268,14 @@ class AuthenticatedJourneyApiTests(TestCase):
         train = sample_train()
         departure_time = "2024-01-18T15:00:00+02:00"
         arrival_time = "2024-01-19T15:00:00+02:00"
-        crew = Crew.objects.create(
-            first_name="Testname",
-            last_name="Testlastname"
-        )
+        crew = Crew.objects.create(first_name="Testname", last_name="Testlastname")
 
         payload = {
             "route": route,
             "train": train,
             "departure_time": departure_time,
             "arrival_time": arrival_time,
-            "crew": crew.id
+            "crew": crew.id,
         }
         res = self.client.post(JOURNEY_URL, payload)
 
@@ -312,15 +291,13 @@ class AdminTrainApiTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_create_train(self):
-        train_type = TrainType.objects.create(
-            name="Test type"
-        )
+        train_type = TrainType.objects.create(name="Test type")
 
         payload = {
             "name": "Test train",
             "cargo_num": 4,
             "places_in_cargo": 20,
-            "train_type": train_type.id
+            "train_type": train_type.id,
         }
         res = self.client.post(TRAIN_URL, payload)
 
@@ -340,21 +317,15 @@ class AdminJourneyApiTests(TestCase):
         train = sample_train()
         departure_time = "2024-01-18T15:00:00+02:00"
         arrival_time = "2024-01-19T15:00:00+02:00"
-        crew1 = Crew.objects.create(
-            first_name="Testname1",
-            last_name="Testlastname1"
-        )
-        crew2 = Crew.objects.create(
-            first_name="Testname2",
-            last_name="Testlastname2"
-        )
+        crew1 = Crew.objects.create(first_name="Testname1", last_name="Testlastname1")
+        crew2 = Crew.objects.create(first_name="Testname2", last_name="Testlastname2")
 
         payload = {
             "route": route.id,
             "train": train.id,
             "departure_time": departure_time,
             "arrival_time": arrival_time,
-            "crew": [crew1.id, crew2.id]
+            "crew": [crew1.id, crew2.id],
         }
         res = self.client.post(JOURNEY_URL, payload)
 
