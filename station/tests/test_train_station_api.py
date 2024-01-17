@@ -280,3 +280,24 @@ class AuthenticatedJourneyApiTests(TestCase):
         serializer = JourneyDetailSerializer(journey)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_create_journey_forbidden(self):
+        route = sample_route()
+        train = sample_train()
+        departure_time = "2024-01-18T15:00:00+02:00"
+        arrival_time = "2024-01-19T15:00:00+02:00"
+        crew = Crew.objects.create(
+            first_name="Testname",
+            last_name="Testlastname"
+        )
+
+        payload = {
+            "route": route,
+            "train": train,
+            "departure_time": departure_time,
+            "arrival_time": arrival_time,
+            "crew": crew.id
+        }
+        res = self.client.post(JOURNEY_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
