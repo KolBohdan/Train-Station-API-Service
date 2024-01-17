@@ -15,7 +15,7 @@ from station.models import (
 )
 from station.serializers import (
     TrainListSerializer,
-    TrainDetailSerializer,
+    TrainDetailSerializer, JourneyListSerializer,
 )
 
 TRAIN_URL = reverse("station:train-list")
@@ -68,17 +68,12 @@ def sample_train(**params):
 def sample_journey(**params):
     train = sample_train()
     route = sample_route()
-    crew = Crew.objects.create(
-        first_name="Testname",
-        last_name="Testlastname"
-    )
 
     defaults = {
         "route": route,
         "train": train,
         "departure_time": "2024-01-18 15:00:00",
-        "arrival_time": "2024-01-19 10:00:00",
-        "crew": crew
+        "arrival_time": "2024-01-19 10:00:00"
     }
     defaults.update(params)
 
@@ -188,3 +183,28 @@ class UnauthenticatedJourneyApiTests(TestCase):
     def test_auth_required(self):
         res = self.client.get(JOURNEY_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class AuthenticatedJourneyApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "test@test.com",
+            "testpass",
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_list_journeys(self):
+        sample_journey()
+        sample_journey()
+
+        res = self.client.get(JOURNEY_URL)
+
+        journeys = Journey.objects.order_by("id")
+        serializer = JourneyListSerializer(journeys, many=True)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        for index, serializer_object in enumerate(serializer.data):
+            for key in serializer_object:
+                self.assertEqual(serializer_object[key], res.data[index][key])
