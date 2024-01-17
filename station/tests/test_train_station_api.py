@@ -249,3 +249,19 @@ class AuthenticatedJourneyApiTests(TestCase):
         self.assertIn(serializer1.data, res.data)
         self.assertIn(serializer2.data, res.data)
         self.assertNotIn(serializer3.data, res.data)
+
+    def test_filter_journeys_by_departure_time(self):
+        departure_time = "2024-01-18"
+
+        journey1 = sample_journey()
+        journey2 = sample_journey(departure_time="2000-01-18T15:00:00+02:00")
+
+        res = self.client.get(
+            JOURNEY_URL, {"departure_time": departure_time}
+        )
+
+        serializer1 = JourneyListSerializer(journey1)
+        serializer2 = JourneyListSerializer(journey2)
+
+        self.assertIn(serializer1.data, res.data)
+        self.assertNotIn(serializer2.data, res.data)
