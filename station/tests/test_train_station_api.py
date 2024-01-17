@@ -200,20 +200,15 @@ class AuthenticatedJourneyApiTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_list_journeys(self):
-        sample_journey()
-        sample_journey()
-
         res = self.client.get(JOURNEY_URL)
 
-        journeys = Journey.objects.all()
+        journeys = Journey.objects.order_by("id")
         serializer = JourneyListSerializer(journeys, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        for index, serializer_object in enumerate(serializer.data):
-            for key in serializer_object:
-                self.assertEqual(serializer_object[key], res.data[index][key])
+        self.assertEqual(res.data, serializer.data)
 
-    def test_filter_flights_by_routes(self):
+    def test_filter_journeys_by_routes(self):
         route1 = sample_route(distance=111)
         route2 = sample_route(distance=222)
         route3 = sample_route(distance=333)
@@ -224,6 +219,27 @@ class AuthenticatedJourneyApiTests(TestCase):
 
         res = self.client.get(
             JOURNEY_URL, {"route": f"{route1.id}, {route2.id}"}
+        )
+
+        serializer1 = JourneyListSerializer(journey1)
+        serializer2 = JourneyListSerializer(journey2)
+        serializer3 = JourneyListSerializer(journey3)
+
+        self.assertIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data)
+        self.assertNotIn(serializer3.data, res.data)
+
+    def test_filter_journeys_by_trains(self):
+        train1 = sample_train(name="Train 1")
+        train2 = sample_train(name="Train 2")
+        train3 = sample_train(name="Train 3")
+
+        journey1 = sample_journey(train=train1)
+        journey2 = sample_journey(train=train2)
+        journey3 = sample_journey(train=train3)
+
+        res = self.client.get(
+            JOURNEY_URL, {"train": f"{train1.id}, {train2.id}"}
         )
 
         serializer1 = JourneyListSerializer(journey1)
