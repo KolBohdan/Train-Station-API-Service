@@ -15,7 +15,8 @@ from station.models import (
 )
 from station.serializers import (
     TrainListSerializer,
-    TrainDetailSerializer, JourneyListSerializer,
+    TrainDetailSerializer,
+    JourneyListSerializer,
 )
 
 TRAIN_URL = reverse("station:train-list")
@@ -72,12 +73,16 @@ def sample_journey(**params):
     defaults = {
         "route": route,
         "train": train,
-        "departure_time": "2024-01-18 15:00:00",
-        "arrival_time": "2024-01-19 10:00:00"
+        "departure_time": "2024-01-18T15:00:00+02:00",
+        "arrival_time": "2024-01-19T10:00:00+02:00"
     }
     defaults.update(params)
 
-    return Journey.objects.create(**defaults)
+    journey = Journey.objects.create(**defaults)
+
+    journey.tickets_available = train.cargo_num * train.places_in_cargo
+
+    return journey
 
 
 def detail_url(train_id):
@@ -200,11 +205,31 @@ class AuthenticatedJourneyApiTests(TestCase):
 
         res = self.client.get(JOURNEY_URL)
 
-        journeys = Journey.objects.order_by("id")
+        journeys = Journey.objects.all()
         serializer = JourneyListSerializer(journeys, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-
         for index, serializer_object in enumerate(serializer.data):
             for key in serializer_object:
                 self.assertEqual(serializer_object[key], res.data[index][key])
+
+    def test_filter_flights_by_routes(self):
+        route1 = sample_route(distance=111)
+        route2 = sample_route(distance=222)
+        route3 = sample_route(distance=333)
+
+        journey1 = sample_journey(route=route1)
+        journey2 = sample_journey(route=route2)
+        journey3 = sample_journey(route=route3)
+
+        res = self.client.get(
+            JOURNEY_URL, {"route": f"{route1.id}, {route2.id}"}
+        )
+
+        serializer1 = JourneyListSerializer(journey1)
+        serializer2 = JourneyListSerializer(journey2)
+        serializer3 = JourneyListSerializer(journey3)
+
+        self.assertIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data)
+        self.assertNotIn(serializer3.data, res.data)
