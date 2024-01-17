@@ -172,9 +172,16 @@ class JourneyViewSet(
     )
     serializer_class = JourneySerializer
 
+    @staticmethod
+    def _params_to_ints(qs):
+        """Converts a list of string IDs to a list of integers"""
+        return [int(str_id) for str_id in qs.split(",")]
+
     def get_queryset(self):
+        """Retrieve the journeys with filters"""
         departure_time = self.request.query_params.get("departure_time")
         train_id_str = self.request.query_params.get("train")
+        route = self.request.query_params.get("route")
 
         queryset = self.queryset
 
@@ -185,7 +192,11 @@ class JourneyViewSet(
         if train_id_str:
             queryset = queryset.filter(train_id=int(train_id_str))
 
-        return queryset
+        if route:
+            route_ids = self._params_to_ints(route)
+            queryset = queryset.filter(route__id__in=route_ids)
+
+        return queryset.distinct()
 
     def get_serializer_class(self):
         if self.action == "list":
