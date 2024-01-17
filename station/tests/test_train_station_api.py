@@ -17,6 +17,7 @@ from station.serializers import (
     TrainListSerializer,
     TrainDetailSerializer,
     JourneyListSerializer,
+    JourneyDetailSerializer,
 )
 
 TRAIN_URL = reverse("station:train-list")
@@ -85,8 +86,12 @@ def sample_journey(**params):
     return journey
 
 
-def detail_url(train_id):
+def detail_train_url(train_id):
     return reverse("station:train-detail", args=[train_id])
+
+
+def detail_journey_url(journey_id):
+    return reverse("station:journey-detail", args=[journey_id])
 
 
 class UnauthenticatedTrainApiTests(TestCase):
@@ -158,7 +163,7 @@ class AuthenticatedTrainApiTests(TestCase):
     def test_retrieve_train_detail(self):
         train = sample_train()
 
-        url = detail_url(train.id)
+        url = detail_train_url(train.id)
         res = self.client.get(url)
 
         serializer = TrainDetailSerializer(train)
@@ -265,3 +270,13 @@ class AuthenticatedJourneyApiTests(TestCase):
 
         self.assertIn(serializer1.data, res.data)
         self.assertNotIn(serializer2.data, res.data)
+
+    def test_retrieve_journey_detail(self):
+        journey = sample_journey()
+
+        url = detail_journey_url(journey.id)
+        res = self.client.get(url)
+
+        serializer = JourneyDetailSerializer(journey)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
