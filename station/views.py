@@ -180,7 +180,7 @@ class JourneyViewSet(
     def get_queryset(self):
         """Retrieve the journeys with filters"""
         departure_time = self.request.query_params.get("departure_time")
-        train_id_str = self.request.query_params.get("train")
+        train = self.request.query_params.get("train")
         route = self.request.query_params.get("route")
 
         queryset = self.queryset
@@ -189,8 +189,9 @@ class JourneyViewSet(
             departure_time = datetime.strptime(departure_time, "%Y-%m-%d").date()
             queryset = queryset.filter(departure_time__date=departure_time)
 
-        if train_id_str:
-            queryset = queryset.filter(train_id=int(train_id_str))
+        if train:
+            train_ids = self._params_to_ints(train)
+            queryset = queryset.filter(train__id__in=train_ids)
 
         if route:
             route_ids = self._params_to_ints(route)
@@ -216,6 +217,11 @@ class JourneyViewSet(
                 "departure_time",
                 type=OpenApiTypes.STR,
                 description="Filter by departure time in format Y-m-d (ex. ?departure_time=2024-02-20)",
+            ),
+            OpenApiParameter(
+                "route",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by route id (ex. ?route=1,2)",
             ),
         ]
     )
