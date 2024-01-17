@@ -301,3 +301,27 @@ class AuthenticatedJourneyApiTests(TestCase):
         res = self.client.post(JOURNEY_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class AdminTrainApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "admin@admin.com", "testpass", is_staff=True
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_create_train(self):
+        train_type = TrainType.objects.create(
+            name="Test type"
+        )
+
+        payload = {
+            "name": "Test train",
+            "cargo_num": 4,
+            "places_in_cargo": 20,
+            "train_type": train_type.id
+        }
+        res = self.client.post(TRAIN_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
