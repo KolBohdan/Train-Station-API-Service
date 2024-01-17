@@ -325,3 +325,37 @@ class AdminTrainApiTests(TestCase):
         res = self.client.post(TRAIN_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+
+class AdminJourneyApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "admin@admin.com", "testpass", is_staff=True
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_create_journey(self):
+        route = sample_route()
+        train = sample_train()
+        departure_time = "2024-01-18T15:00:00+02:00"
+        arrival_time = "2024-01-19T15:00:00+02:00"
+        crew1 = Crew.objects.create(
+            first_name="Testname1",
+            last_name="Testlastname1"
+        )
+        crew2 = Crew.objects.create(
+            first_name="Testname2",
+            last_name="Testlastname2"
+        )
+
+        payload = {
+            "route": route.id,
+            "train": train.id,
+            "departure_time": departure_time,
+            "arrival_time": arrival_time,
+            "crew": [crew1.id, crew2.id]
+        }
+        res = self.client.post(JOURNEY_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
