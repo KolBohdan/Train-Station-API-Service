@@ -210,7 +210,9 @@ class AuthenticatedJourneyApiTests(TestCase):
         journey2 = sample_journey(route=route2)
         journey3 = sample_journey(route=route3)
 
-        res = self.client.get(JOURNEY_URL, {"route": f"{route1.id}, {route2.id}"})
+        res = self.client.get(
+            JOURNEY_URL, {"route": f"{route1.id}, {route2.id}"}
+        )
 
         serializer1 = JourneyListSerializer(journey1)
         serializer2 = JourneyListSerializer(journey2)
@@ -229,7 +231,9 @@ class AuthenticatedJourneyApiTests(TestCase):
         journey2 = sample_journey(train=train2)
         journey3 = sample_journey(train=train3)
 
-        res = self.client.get(JOURNEY_URL, {"train": f"{train1.id}, {train2.id}"})
+        res = self.client.get(
+            JOURNEY_URL, {"train": f"{train1.id}, {train2.id}"}
+        )
 
         serializer1 = JourneyListSerializer(journey1)
         serializer2 = JourneyListSerializer(journey2)
@@ -268,7 +272,9 @@ class AuthenticatedJourneyApiTests(TestCase):
         train = sample_train()
         departure_time = "2024-01-18T15:00:00+02:00"
         arrival_time = "2024-01-19T15:00:00+02:00"
-        crew = Crew.objects.create(first_name="Testname", last_name="Testlastname")
+        crew = Crew.objects.create(
+            first_name="Testname", last_name="Testlastname"
+        )
 
         payload = {
             "route": route,
@@ -317,8 +323,12 @@ class AdminJourneyApiTests(TestCase):
         train = sample_train()
         departure_time = "2024-01-18T15:00:00+02:00"
         arrival_time = "2024-01-19T15:00:00+02:00"
-        crew1 = Crew.objects.create(first_name="Testname1", last_name="Testlastname1")
-        crew2 = Crew.objects.create(first_name="Testname2", last_name="Testlastname2")
+        crew1 = Crew.objects.create(
+            first_name="Testname1", last_name="Testlastname1"
+        )
+        crew2 = Crew.objects.create(
+            first_name="Testname2", last_name="Testlastname2"
+        )
 
         payload = {
             "route": route.id,

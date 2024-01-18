@@ -186,7 +186,9 @@ class JourneyViewSet(
         queryset = self.queryset
 
         if departure_time:
-            departure_time = datetime.strptime(departure_time, "%Y-%m-%d").date()
+            departure_time = datetime.strptime(
+                departure_time, "%Y-%m-%d"
+            ).date()
             queryset = queryset.filter(departure_time__date=departure_time)
 
         if train:
@@ -216,7 +218,8 @@ class JourneyViewSet(
             OpenApiParameter(
                 "departure_time",
                 type=OpenApiTypes.STR,
-                description="Filter by departure time in format Y-m-d (ex. ?departure_time=2024-02-20)",
+                description="Filter by departure time in format Y-m-d "
+                            "(ex. ?departure_time=2024-02-20)",
             ),
             OpenApiParameter(
                 "route",
@@ -240,7 +243,9 @@ class OrderViewSet(
     viewsets.GenericViewSet,
 ):
     queryset = Order.objects.prefetch_related(
-        "tickets__journey__crew", "tickets__journey__route", "tickets__journey__train"
+        "tickets__journey__crew",
+        "tickets__journey__route",
+        "tickets__journey__train"
     )
     pagination_class = OrderPagination
     serializer_class = OrderSerializer
