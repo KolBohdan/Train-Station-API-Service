@@ -27,10 +27,23 @@ Install `PostgreSQL` and create db.
 ```bash
 git clone https://github.com/KolBohdan/train-station-api-service
 cd train_station_service
-python3 -m venv venv
+```
+
+For Windows users:
+```bash
+python -m venv venv
 source venv/Scripts/activate
+```
+For macOS/Linux users:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+Install requirements:
+```bash
 pip install -r requirements.txt
 ```
+
 ### Set your variables
 ```bash
 set DJANGO_SECRET_KEY=<your secret key>
@@ -41,11 +54,28 @@ set POSTGRES_DB=<your Postgres database>
 set POSTGRES_USER=<your Postgres user>
 set POSTGRES_PASSWORD=<your Postgres password>
 ```
-### Migrate db and run server
+###### or you can use .env file with these variables.
+
+### Migrate db and create user
+
 ```bash
 python manage.py migrate
+```
+You can create admin user:
+```bash
+python manage.py createsuperuser
+```
+###### or use default user as described in the ''Getting access'' section.
+### Run server:
+- For Windows users:
+```bash
 python manage.py runserver
 ```
+- For macOS/Linux users:
+```bash
+python3 manage.py runserver
+```
+
 
 ## Run with docker
 
@@ -59,3 +89,18 @@ docker-compose up
 ## Getting access
 - create a user via **/api/user/register/**
 - get access token via **/api/user/token/**
+
+## Train Station endpoints
+You can use next endpoints:
+```
+"train_types": "http://127.0.0.1:8000/api/station/train_types/",
+"trains": "http://127.0.0.1:8000/api/station/trains/",
+"train": "http://127.0.0.1:8000/api/station/trains/<pk>/",
+"train_image": "http://127.0.0.1:8000/api/station/trains/<pk>/upload-image/",
+"crews": "http://127.0.0.1:8000/api/station/crews/",
+"stations": "http://127.0.0.1:8000/api/station/stations/",
+"routes": "http://127.0.0.1:8000/api/station/routes/",
+"journeys": "http://127.0.0.1:8000/api/station/journeys/",
+"journey": "http://127.0.0.1:8000/api/station/journeys/<pk>",
+"orders": "http://127.0.0.1:8000/api/station/orders/"
+```
