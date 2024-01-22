@@ -17,7 +17,7 @@
 
 ## DB structure 
 
-![DB structure](train_station_db_structure.png)
+![DB structure](project_preview/train_station_db_structure.png)
 
 ## Installing Using GitHub
 
