@@ -82,7 +82,7 @@ class Journey(models.Model):
     arrival_time = models.DateTimeField()
     crew = models.ManyToManyField(to=Crew)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.route)
 
 
@@ -92,7 +92,7 @@ class Order(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders"
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.created_at)
 
     class Meta:
@@ -110,7 +110,12 @@ class Ticket(models.Model):
     )
 
     @staticmethod
-    def validate_ticket(cargo, seat, train, error_to_raise):
+    def validate_ticket(
+            cargo: int,
+            seat: int,
+            train: Train,
+            error_to_raise
+    ) -> None:
         for ticket_attr_value, ticket_attr_name, train_attr_name in [
             (cargo, "cargo", "cargo_num"),
             (seat, "seat", "places_in_cargo"),
@@ -146,7 +151,7 @@ class Ticket(models.Model):
             force_insert, force_update, using, update_fields
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{str(self.journey)} (cargo: {self.cargo}, seat: {self.seat})"
 
     class Meta:

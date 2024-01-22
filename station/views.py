@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Type
 
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
@@ -56,7 +57,7 @@ class TrainViewSet(
     serializer_class = TrainSerializer
 
     @staticmethod
-    def _params_to_ints(qs):
+    def _params_to_ints(qs) -> list[int]:
         """Converts a list of string IDs to a list of integers"""
         return [int(str_id) for str_id in qs.split(",")]
 
@@ -76,7 +77,12 @@ class TrainViewSet(
 
         return queryset.distinct()
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> Type[
+        TrainListSerializer |
+        TrainDetailSerializer |
+        TrainImageSerializer |
+        TrainSerializer
+    ]:
         if self.action == "list":
             return TrainListSerializer
 
@@ -149,7 +155,10 @@ class RouteViewSet(
     queryset = Route.objects.select_related("source", "destination")
     serializer_class = RouteSerializer
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> Type[
+        RouteListSerializer |
+        RouteSerializer
+    ]:
         if self.action == "list":
             return RouteListSerializer
 
@@ -174,7 +183,7 @@ class JourneyViewSet(
     serializer_class = JourneySerializer
 
     @staticmethod
-    def _params_to_ints(qs):
+    def _params_to_ints(qs) -> list[int]:
         """Converts a list of string IDs to a list of integers"""
         return [int(str_id) for str_id in qs.split(",")]
 
@@ -202,7 +211,11 @@ class JourneyViewSet(
 
         return queryset.distinct()
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> Type[
+        JourneyListSerializer |
+        JourneyDetailSerializer |
+        JourneySerializer
+    ]:
         if self.action == "list":
             return JourneyListSerializer
 
@@ -257,7 +270,10 @@ class OrderViewSet(
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> Type[
+        OrderListSerializer |
+        OrderSerializer
+    ]:
         if self.action == "list":
             return OrderListSerializer
 
