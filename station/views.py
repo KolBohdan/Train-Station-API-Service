@@ -92,7 +92,7 @@ class TrainViewSet(
         if self.action == "upload_image":
             return TrainImageSerializer
 
-        return TrainSerializer
+        return self.serializer_class
 
     @action(
         methods=["POST"],
@@ -162,7 +162,7 @@ class RouteViewSet(
         if self.action == "list":
             return RouteListSerializer
 
-        return RouteSerializer
+        return self.serializer_class
 
 
 class JourneyViewSet(
@@ -222,7 +222,7 @@ class JourneyViewSet(
         if self.action == "retrieve":
             return JourneyDetailSerializer
 
-        return JourneySerializer
+        return self.serializer_class
 
     @extend_schema(
         parameters=[
@@ -277,7 +277,7 @@ class OrderViewSet(
         if self.action == "list":
             return OrderListSerializer
 
-        return OrderSerializer
+        return self.serializer_class
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
