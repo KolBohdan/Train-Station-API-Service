@@ -152,6 +152,7 @@ class RouteViewSet(
     def get_serializer_class(self):
         if self.action == "list":
             return RouteListSerializer
+
         return RouteSerializer
 
 
@@ -204,8 +205,10 @@ class JourneyViewSet(
     def get_serializer_class(self):
         if self.action == "list":
             return JourneyListSerializer
+
         if self.action == "retrieve":
             return JourneyDetailSerializer
+
         return JourneySerializer
 
     @extend_schema(

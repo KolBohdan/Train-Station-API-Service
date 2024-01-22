@@ -15,12 +15,14 @@ from station.models import (
 
 
 class TrainTypeSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = TrainType
         fields = "__all__"
 
 
 class TrainSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Train
         fields = [
@@ -70,24 +72,28 @@ class TrainDetailSerializer(TrainSerializer):
 
 
 class TrainImageSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Train
         fields = ("id", "image")
 
 
 class CrewSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Crew
         fields = "__all__"
 
 
 class StationSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Station
         fields = "__all__"
 
 
 class RouteSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Route
         fields = "__all__"
@@ -103,6 +109,7 @@ class RouteListSerializer(RouteSerializer):
 
 
 class JourneySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Journey
         fields = "__all__"
@@ -128,6 +135,7 @@ class JourneyListSerializer(JourneySerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
+
     def validate(self, attrs):
         data = super(TicketSerializer, self).validate(attrs=attrs)
         Ticket.validate_ticket(
@@ -148,6 +156,7 @@ class TicketListSerializer(TicketSerializer):
 
 
 class TicketSeatsSerializer(TicketSerializer):
+
     class Meta:
         model = Ticket
         fields = ("cargo", "seat")
